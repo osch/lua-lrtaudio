@@ -1,0 +1,43 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04]
+        luaVersion: ["5.1", "5.2", "5.3", "5.4", "luajit"]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@master
+
+    - uses: leafo/gh-actions-lua@master
+      with:
+        luaVersion: ${{ matrix.luaVersion }}
+
+    - uses: leafo/gh-actions-luarocks@master
+
+    - name: setup-linux
+      if: matrix.os == 'ubuntu-22.04'
+      run: |
+        sudo apt-get install librtaudio-dev
+
+    - name: setup 
+      run: |
+        luarocks --server=https://luarocks.org/dev install nocurses
+        luarocks --server=https://luarocks.org/dev install carray
+        luarocks --server=https://luarocks.org/dev install mtmsg
+        luarocks --server=https://luarocks.org/dev install auproc
+
+    - name: build
+      run: |
+        set -e
+        lua -v
+        luarocks make rockspecs/lrtaudio-scm-0.rockspec
+        lua -e 'print(require"lrtaudio"); print(require"lrtaudio"._VERSION)'
+
+     
