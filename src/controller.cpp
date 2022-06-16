@@ -579,7 +579,7 @@ static int Controller_openStream(lua_State* L)
         lua_Integer numberOfBuffers = -1;
 
         RtAudio::StreamOptions options;
-        options.flags = RTAUDIO_NONINTERLEAVED;
+        options.flags = RTAUDIO_NONINTERLEAVED|RTAUDIO_SCHEDULE_REALTIME|RTAUDIO_MINIMIZE_LATENCY;
         
         if (!lua_isnoneornil(L, initArg)) 
         {
@@ -722,6 +722,19 @@ static int Controller_stopStream(lua_State* L)
 
 /* ============================================================================================ */
 
+static int Controller_getFrameTime(lua_State* L)
+{
+    try {
+        ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
+        lua_pushinteger(L,   udata->stream->processBeginFrameTime 
+                           + udata->stream->bufferFrames);
+        return 1;
+    }
+    catch (...) { return lrtaudio::handleException(L); }
+}
+
+/* ============================================================================================ */
+
 static int Controller_getBufferFrames(lua_State* L)
 {
     try {
@@ -813,6 +826,7 @@ static const luaL_Reg ControllerMethods[] =
     { "stopStream",              Controller_stopStream             },
     { "closeStream",             Controller_closeStream            },
     { "close",                   Controller_release                },
+    { "getFrameTime",            Controller_getFrameTime           },
     { "getBufferFrames",         Controller_getBufferFrames        },
     { "getSampleRate",           Controller_getSampleRate          },
     { "getInputInfo",            Controller_getInputInfo           },

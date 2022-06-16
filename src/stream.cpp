@@ -100,8 +100,6 @@ int stream::rtaudio_callback(void* outputBuffer, void* inputBuffer,
                              unsigned int nframes, double streamTime, 
                              RtAudioStreamStatus status, void* voidData)
 {
-printf("ProcessCallback %d\n", nframes);
-
     Stream* stream = (Stream*) voidData;
     
     ProcReg** list = stream->activeProcRegList;

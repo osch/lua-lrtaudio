@@ -1,9 +1,13 @@
 #include <rtaudio/RtAudio.h>
 
+#define AUPROC_CAPI_IMPLEMENT_SET_CAPI 1
+
 #include "main.hpp"
 #include "controller.hpp"
 #include "stream.hpp"
 #include "procbuf.hpp"
+#include "auproc_capi.h"
+#include "auproc_capi_impl.hpp"
 
 using namespace lrtaudio;
 
@@ -234,7 +238,7 @@ static void setupProcBufMeta(lua_State* L)
     lua_newtable(L);                             /* -> meta, ProcBufClass */
     luaL_setfuncs(L, ProcBufMethods, 0);           /* -> meta, ProcBufClass */
     lua_setfield (L, -2, "__index");             /* -> meta */
-//   auproc_set_capi(L, -1, &auproc_capi_impl);
+    auproc_set_capi(L, -1, &auproc::capi_impl);
 }
 
 /* ============================================================================================ */

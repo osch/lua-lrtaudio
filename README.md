@@ -18,7 +18,7 @@ has to be implemented in native C code.
 
 #### Further reading:
    * [Documentation](./doc/README.md#lrtaudio-documentation) TODO
-   * [Examples](./examples/README.md#lrtaudio-examples) TODO
+   * [Examples](./examples/README.md#lrtaudio-examples)
 
 <!-- ---------------------------------------------------------------------------------------- -->
 

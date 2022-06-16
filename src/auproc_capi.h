@@ -7,6 +7,14 @@
 #define AUPROC_CAPI_VERSION_MINOR  1
 #define AUPROC_CAPI_VERSION_PATCH  0
 
+#ifndef AUPROC_CAPI_IMPLEMENT_SET_CAPI
+#  define AUPROC_CAPI_IMPLEMENT_SET_CAPI 0
+#endif
+
+#ifndef AUPROC_CAPI_IMPLEMENT_GET_CAPI
+#  define AUPROC_CAPI_IMPLEMENT_GET_CAPI 0
+#endif
+
 #ifdef __cplusplus
 
 extern "C" {
@@ -43,14 +51,6 @@ typedef enum   auproc_obj_type  auproc_obj_type;
 typedef enum   auproc_con_type  auproc_con_type;
 
 #endif /* ! __cplusplus */
-
-#ifndef AUPROC_CAPI_IMPLEMENT_SET_CAPI
-#  define AUPROC_CAPI_IMPLEMENT_SET_CAPI 0
-#endif
-
-#ifndef AUPROC_CAPI_IMPLEMENT_GET_CAPI
-#  define AUPROC_CAPI_IMPLEMENT_GET_CAPI 0
-#endif
 
 enum auproc_direction
 {
@@ -486,7 +486,7 @@ struct auproc_capi
 static int auproc_set_capi(lua_State* L, int index, const auproc_capi* capi)
 {
     lua_pushlstring(L, AUPROC_CAPI_ID_STRING, strlen(AUPROC_CAPI_ID_STRING));             /* -> key */
-    void** udata = lua_newuserdata(L, sizeof(void*) + strlen(AUPROC_CAPI_ID_STRING) + 1); /* -> key, value */
+    void** udata = (void**) lua_newuserdata(L, sizeof(void*) + strlen(AUPROC_CAPI_ID_STRING) + 1); /* -> key, value */
     *udata = (void*)capi;
     strcpy((char*)(udata + 1), AUPROC_CAPI_ID_STRING);    /* -> key, value */
     lua_rawset(L, (index < 0) ? (index - 2) : index);     /* -> */
@@ -502,21 +502,21 @@ static const auproc_capi* auproc_get_capi(lua_State* L, int index, int* versionE
 {
     if (luaL_getmetafield(L, index, AUPROC_CAPI_ID_STRING) == LUA_TUSERDATA) /* -> _capi */
     {
-        void** udata = lua_touserdata(L, -1);                                  /* -> _capi */
+        const void** udata = (const void**) lua_touserdata(L, -1);           /* -> _capi */
 
         if (   (lua_rawlen(L, -1) >= sizeof(void*) + strlen(AUPROC_CAPI_ID_STRING) + 1)
             && (memcmp((char*)(udata + 1), AUPROC_CAPI_ID_STRING, 
                        strlen(AUPROC_CAPI_ID_STRING) + 1) == 0))
         {
-            const auproc_capi* capi = *udata;                                /* -> _capi */
+            const auproc_capi* capi = (const auproc_capi*) *udata;           /* -> _capi */
             while (capi) {
                 if (   capi->version_major == AUPROC_CAPI_VERSION_MAJOR
                     && capi->version_minor >= AUPROC_CAPI_VERSION_MINOR)
-                {                                                              /* -> _capi */
-                    lua_pop(L, 1);                                             /* -> */
+                {                                                            /* -> _capi */
+                    lua_pop(L, 1);                                           /* -> */
                     return capi;
                 }
-                capi = capi->next_capi;
+                capi = (const auproc_capi*) capi->next_capi;
             }
             if (versionError) {
                 *versionError = 1;

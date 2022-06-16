@@ -210,7 +210,7 @@ struct receiver_capi
 static int receiver_set_capi(lua_State* L, int index, const receiver_capi* capi)
 {
     lua_pushlstring(L, RECEIVER_CAPI_ID_STRING, strlen(RECEIVER_CAPI_ID_STRING));           /* -> key */
-    void** udata = lua_newuserdata(L, sizeof(void*) + strlen(RECEIVER_CAPI_ID_STRING) + 1); /* -> key, value */
+    void** udata = (void**) lua_newuserdata(L, sizeof(void*) + strlen(RECEIVER_CAPI_ID_STRING) + 1); /* -> key, value */
     *udata = (void*)capi;
     strcpy((char*)(udata + 1), RECEIVER_CAPI_ID_STRING);  /* -> key, value */
     lua_rawset(L, (index < 0) ? (index - 2) : index);     /* -> */

@@ -24,10 +24,11 @@ jobs:
     - name: setup-linux
       if: matrix.os == 'ubuntu-22.04'
       run: |
-        sudo apt-get install librtaudio-dev
+        sudo apt-get install librtaudio-dev jackd libjack0 libjack-dev
 
     - name: setup 
       run: |
+        luarocks install inspect
         luarocks --server=https://luarocks.org/dev install nocurses
         luarocks --server=https://luarocks.org/dev install carray
         luarocks --server=https://luarocks.org/dev install mtmsg
@@ -40,4 +41,12 @@ jobs:
         luarocks make rockspecs/lrtaudio-scm-0.rockspec
         lua -e 'print(require"lrtaudio"); print(require"lrtaudio"._VERSION)'
 
+    - name: test
+      run: |
+        set -e
+        lua -v
+        jackd -r -ddummy -r44100 -p1024 &
+        sleep 2
+        echo "=============================================="
+        lua examples/example01.lua
      
