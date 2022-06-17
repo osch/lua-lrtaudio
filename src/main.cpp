@@ -301,9 +301,6 @@ extern "C" {
 #define LRTAUDIO_TOSTRING(x) LRTAUDIO_STRINGIFY(x)
 #define LRTAUDIO_VERSION_STRING LRTAUDIO_TOSTRING(LRTAUDIO_VERSION)
 
-const char* const LRTAUDIO_MODULE_NAME = "rtaudio";
-
-
 /* ============================================================================================ */
 
 static int Lrtaudio_getVersion(lua_State* L)
@@ -332,7 +329,7 @@ static int Lrtaudio_getCompiledApi(lua_State* L)
 
 /* ============================================================================================ */
 
-static int Lrtaudio_set_error_log(lua_State* L)
+static int Lrtaudio_setErrorLog(lua_State* L)
 {
     assureMutexInitialized(&lrtaudio::errorLog);
     return setLogFunction(L, &lrtaudio::errorLog);
@@ -340,7 +337,7 @@ static int Lrtaudio_set_error_log(lua_State* L)
 
 /* ============================================================================================ */
 
-static int Lrtaudio_set_info_log(lua_State* L)
+static int Lrtaudio_setInfoLog(lua_State* L)
 {
     assureMutexInitialized(&lrtaudio::infoLog);
     return setLogFunction(L, &lrtaudio::infoLog);
@@ -350,10 +347,10 @@ static int Lrtaudio_set_info_log(lua_State* L)
 
 static const luaL_Reg ModuleFunctions[] = 
 {
-    { "set_error_log",     Lrtaudio_set_error_log  },
-    { "set_info_log",      Lrtaudio_set_info_log   },
-    { "getRtAudioVersion", Lrtaudio_getVersion  },
-    { "getCompiledApi",    Lrtaudio_getCompiledApi  },
+    { "setErrorLog",       Lrtaudio_setErrorLog    },
+    { "setInfoLog",        Lrtaudio_setInfoLog     },
+    { "getRtAudioVersion", Lrtaudio_getVersion     },
+    { "getCompiledApi",    Lrtaudio_getCompiledApi },
     { NULL,                NULL } /* sentinel */
 };
 

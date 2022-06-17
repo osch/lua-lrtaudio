@@ -28,22 +28,10 @@ struct ChannelUserData;
 struct ProcBufUserData;
 struct Stream;
 
-struct Api
-{
-    Api(RtAudio::Api apiType)
-        : usageCounter(1),
-          api(apiType)
-    {}
-    int usageCounter;
-    RtAudio api;
-};
-
-
 struct ControllerUserData
 {
     const char*          className;
     RtAudio*             api;
-    Api*                 ptr;
     const receiver_capi* statusReceiverCapi;
     receiver_object*     statusReceiver;
     

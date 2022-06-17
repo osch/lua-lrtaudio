@@ -1,12 +1,15 @@
 #include <rtaudio/RtAudio.h>
 
+#define AUPROC_CAPI_IMPLEMENT_SET_CAPI 1
+#define RECEIVER_CAPI_IMPLEMENT_GET_CAPI 1
+
 #include "controller.hpp"
 #include "stream.hpp"
 #include "main.hpp"
 #include "channel.hpp"
 #include "procbuf.hpp"
-
-#define RECEIVER_CAPI_IMPLEMENT_GET_CAPI 1
+#include "auproc_capi.h"
+#include "auproc_capi_impl.hpp"
 #include "receiver_capi.h"
 
 using namespace lrtaudio;
@@ -105,12 +108,11 @@ static int Controller_new(lua_State* L)
             udata->statusReceiver     = receiver;
             receiverCapi->retainReceiver(receiver);
         }
-        udata->ptr = new lrtaudio::Api(apiType);
+        udata->api = new RtAudio(apiType);
         
-        if (!udata->ptr) {
-            return luaL_error(L, "cannot create rtaudio object");
+        if (!udata->api) {
+            return luaL_error(L, "cannot create RtAudio object");
         }
-        udata->api = &udata->ptr->api;
         udata->api->showWarnings(false);
         return 1;
     }
@@ -132,14 +134,9 @@ static int Controller_release(lua_State* L)
             udata->statusReceiver     = NULL;
         }
 
-        if (udata->ptr) {
-            lrtaudio::Api* ptr = udata->ptr;
-            udata->ptr = NULL;
+        if (udata->api) {
+            delete udata->api;
             udata->api = NULL;
-
-            if (--ptr->usageCounter == 0) {
-                delete ptr;
-            }
         }
         return 0;
     }
@@ -579,7 +576,7 @@ static int Controller_openStream(lua_State* L)
         lua_Integer numberOfBuffers = -1;
 
         RtAudio::StreamOptions options;
-        options.flags = RTAUDIO_NONINTERLEAVED|RTAUDIO_SCHEDULE_REALTIME|RTAUDIO_MINIMIZE_LATENCY;
+        options.flags = RTAUDIO_NONINTERLEAVED; //|RTAUDIO_SCHEDULE_REALTIME|RTAUDIO_MINIMIZE_LATENCY;
         
         if (!lua_isnoneornil(L, initArg)) 
         {
@@ -862,7 +859,7 @@ static void setupControllerMeta(lua_State* L)
     lua_newtable(L);                                   /* -> meta, RtaudioClass */
     luaL_setfuncs(L, ControllerMethods, 0);           /* -> meta, RtaudioClass */
     lua_setfield (L, -2, "__index");                   /* -> meta */
-//   auproc_set_capi(L, -1, &auproc_capi_impl);
+    auproc_set_capi(L, -1, &auproc::capi_impl);
 }
 
 

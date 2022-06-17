@@ -9,5 +9,12 @@
        
 <!-- ---------------------------------------------------------------------------------------- -->
 
+   * [`example02.lua`](./example02.lua)
+     
+     This examples plays a sinus tone for 4 seconds using
+     an [Auproc audio sender object](https://github.com/osch/lua-auproc/blob/master/doc/README.md#auproc_new_audio_sender).
+       
+<!-- ---------------------------------------------------------------------------------------- -->
 
-[RtAudio]: https://github.com/thestk/rtaudio
+
+[RtAudio]:                    https://github.com/thestk/rtaudio

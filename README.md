@@ -5,13 +5,14 @@
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-Lua binding for [RtAudio](https://github.com/thestk/rtaudio).
+Lua binding for [RtAudio].
 
-This binding enables [Lua] scripting code to open RtAudio streams and to connect them with Lua 
+This binding enables [Lua] scripting code to open [RtAudio] streams and to connect them with Lua 
 audio processor objects for realtime processing. 
 Realtime audio processing of [Lua processor objects](./doc/README.md#processor-objects) 
 has to be implemented in native C code.
 
+[RtAudio]:      https://github.com/thestk/rtaudio
 [Lua]:          https://www.lua.org
 
 <!-- ---------------------------------------------------------------------------------------- -->
