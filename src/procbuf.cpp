@@ -13,7 +13,7 @@ using namespace lrtaudio;
 
 /* ============================================================================================ */
 
-const char* const LRTAUDIO_PROCBUF_CLASS_NAME = "lrtaudio.ProcessBuffer";
+const char* const LRTAUDIO_PROCBUF_CLASS_NAME = "lrtaudio.StreamBuffer";
 
 /* ============================================================================================ */
 extern "C" {

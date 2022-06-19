@@ -23,29 +23,21 @@ local controller = lrtaudio.new()
 
 print("RtAudio API:", controller:getCurrentApi())
 
-for _, device in ipairs(controller:getDeviceInfo()) do
-    if device.outputChannels >= 2 then
-        print("Using device:", device.name)
-        controller:openStream { outputDevice   = device.deviceId,
-                                outputChannels = 2,
-                                bufferFrames = nil }
-        controller:startStream()
-        break
-    end
-end
+controller:openStream { outputChannels = 1 }
+controller:startStream()
 
 ----------------------------------------------------------------------------------------------------
 
-local rate    = controller:getSampleRate()
-local nframes = controller:getBufferFrames()
+local rate    = controller:getStreamSampleRate()
+local nframes = controller:getStreamBufferFrames()
 
-print("Sample rate:", rate)
+print("Sample rate:",   rate)
 print("Buffer frames:", nframes)
 
 ----------------------------------------------------------------------------------------------------
 
-local sampleQueue  = mtmsg.newbuffer()
-local sender       = auproc.new_audio_sender(controller:output(1), sampleQueue)
+local sampleQueue = mtmsg.newbuffer()
+local sender      = auproc.new_audio_sender(controller:getStreamOutput(1), sampleQueue)
 
 ----------------------------------------------------------------------------------------------------
 

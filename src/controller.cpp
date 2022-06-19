@@ -469,7 +469,7 @@ static int pushChannels(lua_State* L, ControllerUserData* udata, stream::Channel
 
 /* ============================================================================================ */
 
-static int Controller_input(lua_State* L)
+static int Controller_getStreamInput(lua_State* L)
 {
     try {
         ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
@@ -480,7 +480,7 @@ static int Controller_input(lua_State* L)
 
 /* ============================================================================================ */
 
-static int Controller_output(lua_State* L)
+static int Controller_getStreamOutput(lua_State* L)
 {
     try {
         ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
@@ -576,7 +576,12 @@ static int Controller_openStream(lua_State* L)
         lua_Integer numberOfBuffers = -1;
 
         RtAudio::StreamOptions options;
-        options.flags = RTAUDIO_NONINTERLEAVED; //|RTAUDIO_SCHEDULE_REALTIME|RTAUDIO_MINIMIZE_LATENCY;
+        options.flags = RTAUDIO_NONINTERLEAVED;
+                
+        bool minimizeLatency  = false;
+        bool hogDevice        = false;
+        bool scheduleRealtime = false;
+        bool alsaUseDefault   = false;
         
         if (!lua_isnoneornil(L, initArg)) 
         {
@@ -616,6 +621,22 @@ static int Controller_openStream(lua_State* L)
                 {
                     options.streamName = lua_tostring(L, -1);
                 }
+                else if (checkArgTableValueType(L, initArg, key, "minimizeLatency", LUA_TBOOLEAN)) 
+                {
+                    minimizeLatency = lua_toboolean(L, -1);
+                }
+                else if (checkArgTableValueType(L, initArg, key, "hogDevice", LUA_TBOOLEAN)) 
+                {
+                    hogDevice = lua_toboolean(L, -1);
+                }
+                else if (checkArgTableValueType(L, initArg, key, "scheduleRealtime", LUA_TBOOLEAN)) 
+                {
+                    scheduleRealtime = lua_toboolean(L, -1);
+                }
+                else if (checkArgTableValueType(L, initArg, key, "alsaUseDefault", LUA_TBOOLEAN)) 
+                {
+                    alsaUseDefault = lua_toboolean(L, -1);
+                }
                 else {
                     return luaL_argerror(L, initArg, 
                                          lua_pushfstring(L, "unexpected table key '%s'", 
@@ -623,6 +644,19 @@ static int Controller_openStream(lua_State* L)
                 }                           /* -> key, value */
                 lua_pop(L, 1);              /* -> key */
             }                               /* -> */
+        }
+
+        if (minimizeLatency) {
+            options.flags |= RTAUDIO_MINIMIZE_LATENCY;
+        }
+        if (hogDevice) {
+            options.flags |= RTAUDIO_HOG_DEVICE;
+        }
+        if (scheduleRealtime) {
+            options.flags |= RTAUDIO_SCHEDULE_REALTIME;
+        }
+        if (alsaUseDefault) {
+            options.flags |= RTAUDIO_ALSA_USE_DEFAULT;
         }
 
         RtAudio::StreamParameters inStreamParams;
@@ -732,7 +766,7 @@ static int Controller_getFrameTime(lua_State* L)
 
 /* ============================================================================================ */
 
-static int Controller_getBufferFrames(lua_State* L)
+static int Controller_getStreamBufferFrames(lua_State* L)
 {
     try {
         ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
@@ -744,7 +778,7 @@ static int Controller_getBufferFrames(lua_State* L)
 
 /* ============================================================================================ */
 
-static int Controller_getSampleRate(lua_State* L)
+static int Controller_getStreamSampleRate(lua_State* L)
 {
     try {
         ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
@@ -756,7 +790,19 @@ static int Controller_getSampleRate(lua_State* L)
 
 /* ============================================================================================ */
 
-static int Controller_getInputInfo(lua_State* L)
+static int Controller_getStreamLatency(lua_State* L)
+{
+    try {
+        ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
+        lua_pushinteger(L, udata->api->getStreamLatency());
+        return 1;
+    }
+    catch (...) { return lrtaudio::handleException(L); }
+}
+
+/* ============================================================================================ */
+
+static int Controller_getInputDeviceInfo(lua_State* L)
 {
     try {
         ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
@@ -771,7 +817,7 @@ static int Controller_getInputInfo(lua_State* L)
 
 /* ============================================================================================ */
 
-static int Controller_getOutputInfo(lua_State* L)
+static int Controller_getOutputDeviceInfo(lua_State* L)
 {
     try {
         ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
@@ -793,7 +839,7 @@ static const char* const procBufTypes[] =
     NULL
 };
 
-static int Controller_newProcessBuffer(lua_State* L)
+static int Controller_newStreamBuffer(lua_State* L)
 {
     int arg = 1;
     ControllerUserData* ctrlUdata = checkCtrlUdataOpen(L, arg++, true);
@@ -816,20 +862,21 @@ static const luaL_Reg ControllerMethods[] =
     { "getDeviceInfo",           Controller_getDeviceInfo          },
     { "getDefaultInputDevice",   Controller_getDefaultInputDevice  },
     { "getDefaultOutputDevice",  Controller_getDefaultOutputDevice },
-    { "input",                   Controller_input                  },
-    { "output",                  Controller_output                 },
+    { "getStreamInput",          Controller_getStreamInput         },
+    { "getStreamOutput",         Controller_getStreamOutput        },
     { "openStream",              Controller_openStream             },
     { "startStream",             Controller_startStream            },
     { "stopStream",              Controller_stopStream             },
     { "closeStream",             Controller_closeStream            },
     { "close",                   Controller_release                },
     { "getFrameTime",            Controller_getFrameTime           },
-    { "getBufferFrames",         Controller_getBufferFrames        },
-    { "getSampleRate",           Controller_getSampleRate          },
-    { "getInputInfo",            Controller_getInputInfo           },
-    { "getOutputInfo",           Controller_getOutputInfo          },
+    { "getStreamBufferFrames",   Controller_getStreamBufferFrames  },
+    { "getStreamSampleRate",     Controller_getStreamSampleRate    },
+    { "getStreamLatency",        Controller_getStreamLatency       },
+    { "getInputDeviceInfo",      Controller_getInputDeviceInfo     },
+    { "getOutputDeviceInfo",     Controller_getOutputDeviceInfo    },
     { "info",                    Controller_info                   },
-    { "newProcessBuffer",        Controller_newProcessBuffer       },
+    { "newStreamBuffer",         Controller_newStreamBuffer        },
     { NULL,                      NULL } /* sentinel */
 };
 
