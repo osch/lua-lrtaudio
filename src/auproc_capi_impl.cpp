@@ -612,15 +612,6 @@ static void activateProcessor(lua_State* L,
     {
         for (int i = 0; i < reg->connectorCount; ++i) {
             ConnectorInfo* info = reg->connectorInfos + i;
-            if (info->isProcBuf && info->isInput) {
-                if (info->procBufUdata->outActiveCounter < 1) {
-                    luaL_error(L, "process buffer %p has no activated processor for providing data", info->procBufUdata);
-                    return;
-                }
-            }
-        }
-        for (int i = 0; i < reg->connectorCount; ++i) {
-            ConnectorInfo* info = reg->connectorInfos + i;
             if (info->isProcBuf) {
                 if (info->isInput) {
                     info->procBufUdata->inpActiveCounter += 1;
@@ -645,15 +636,6 @@ static void deactivateProcessor(lua_State* L,
 
     if (reg->activated)
     {
-        for (int i = 0; i < reg->connectorCount; ++i) {
-            ConnectorInfo* info = reg->connectorInfos + i;
-            if (info->isProcBuf && info->isOutput) {
-                if (info->procBufUdata->inpActiveCounter > 0) {
-                    luaL_error(L, "process buffer %p data is used by another activated processor", info->procBufUdata);
-                    return;
-                }
-            }
-        }
         for (int i = 0; i < reg->connectorCount; ++i) {
             ConnectorInfo* info = reg->connectorInfos + i;
             if (info->isProcBuf) {
