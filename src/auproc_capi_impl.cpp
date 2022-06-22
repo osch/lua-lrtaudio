@@ -406,6 +406,35 @@ static auproc_processor* registerProcessor(lua_State* L,
     newReg->connectorCount         = connectorCount;
     newReg->connectorInfos         = conInfos;
       
+    for (int i = 0; i < connectorCount; ++i) {
+        ChannelUserData* channelUdata = NULL;
+        ProcBufUserData* procBufUdata = NULL;
+        getConnectorUdata(L, firstConnectorIndex + i, &channelUdata, &procBufUdata);
+        if (channelUdata) {
+            conInfos[i].isChannel = true;
+            channelUdata->procUsageCounter += 1;
+            if (conRegList[i].conDirection == AUPROC_IN) {
+                conInfos[i].isInput  = true;
+            } else {
+                conInfos[i].isOutput = true;
+            }
+            conInfos[i].channelUdata = channelUdata;
+        } 
+        else if (procBufUdata) {
+            conInfos[i].isProcBuf = true;
+            procBufUdata->procUsageCounter += 1;
+            if (conRegList[i].conDirection == AUPROC_IN) {
+                procBufUdata->inpUsageCounter += 1;
+                conInfos[i].isInput = true;
+            } else {
+                conInfos[i].isOutput = true;
+                procBufUdata->outUsageCounter += 1;
+            }
+            conInfos[i].procBufUdata = procBufUdata;
+        }
+    }
+
+    /* --------------------------------------------------------------------- */
     async_mutex_lock(&stream->processMutex);
     {
         int rc = 0;
@@ -429,6 +458,7 @@ static auproc_processor* registerProcessor(lua_State* L,
         stream::activate_proc_list_LOCKED(stream, newList);
     }
     async_mutex_unlock(&stream->processMutex);
+    /* --------------------------------------------------------------------- */
     
     if (oldList) {
         free(oldList);
@@ -439,29 +469,11 @@ static auproc_processor* registerProcessor(lua_State* L,
         ProcBufUserData* procBufUdata = NULL;
         getConnectorUdata(L, firstConnectorIndex + i, &channelUdata, &procBufUdata);
         if (channelUdata) {
-            conInfos[i].isChannel = true;
-            channelUdata->procUsageCounter += 1;
-            if (conRegList[i].conDirection == AUPROC_IN) {
-                conInfos[i].isInput  = true;
-            } else {
-                conInfos[i].isOutput = true;
-            }
-            conInfos[i].channelUdata = channelUdata;
             conRegList[i].connector = (auproc_connector*)channelUdata;
             conRegList[i].audioMethods = &channel_audio_methods;
             conRegList[i].midiMethods  = NULL;
         } 
         else if (procBufUdata) {
-            conInfos[i].isProcBuf = true;
-            procBufUdata->procUsageCounter += 1;
-            if (conRegList[i].conDirection == AUPROC_IN) {
-                procBufUdata->inpUsageCounter += 1;
-                conInfos[i].isInput = true;
-            } else {
-                conInfos[i].isOutput = true;
-                procBufUdata->outUsageCounter += 1;
-            }
-            conInfos[i].procBufUdata = procBufUdata;
             conRegList[i].connector = (auproc_connector*)procBufUdata;
             if (procBufUdata->isAudio) {
                 conRegList[i].audioMethods = &procbuf_audio_methods;
