@@ -21,4 +21,15 @@ Most of the examples are using procesor objects that are provided by the
        
 <!-- ---------------------------------------------------------------------------------------- -->
 
+   * [`example03.lua`](./example03.lua)
+     
+     This example generates audio samples from Lua script code on the main thread and lets the
+     user interactively modify oscillator parameters.
+     This example demonstrates the usage of 
+     [Auproc audio sender object](https://github.com/osch/lua-auproc/blob/master/doc/README.md#auproc_new_audio_sender)
+     and
+     [Auproc audio mixer object](https://github.com/osch/lua-auproc/blob/master/doc/README.md#auproc_new_audio_mixer).
+       
+<!-- ---------------------------------------------------------------------------------------- -->
+
 [RtAudio]:  https://github.com/thestk/rtaudio
