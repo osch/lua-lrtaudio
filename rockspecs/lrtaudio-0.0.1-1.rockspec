@@ -1,9 +1,9 @@
 package = "lrtaudio"
-version = "scm-0"
+version = "0.0.1-1"
 local versionNumber = version:gsub("^(.*)-.-$", "%1")
 source = {
-  url = "https://github.com/osch/lua-lrtaudio/archive/master.zip",
-  dir = "lua-lrtaudio-master",
+  url = "https://github.com/osch/lua-lrtaudio/archive/v"..versionNumber..".zip",
+  dir = "lua-lrtaudio-"..versionNumber,
 }
 description = {
   summary = "Lua binding for the RtAudio",
