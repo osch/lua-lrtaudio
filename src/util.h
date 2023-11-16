@@ -98,8 +98,14 @@ extern "C" {
 #define COMPAT53_PREFIX lrtaudio_compat
 
 #include "async_util.h"
-#include "compat-5.3.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+    #include "compat-5.3.h"
+#if defined(__cplusplus)
+} /* extern "C" */
+#endif
 
 lua_Number lrtaudio_current_time_seconds();
 

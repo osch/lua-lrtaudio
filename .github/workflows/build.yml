@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-22.04, ubuntu-latest, macos-latest]
         luaVersion: ["5.1", "5.2", "5.3", "5.4", "luajit"]
 
     runs-on: ${{ matrix.os }}
@@ -20,14 +20,23 @@ jobs:
         luaVersion: ${{ matrix.luaVersion }}
 
     - uses: leafo/gh-actions-luarocks@master
+      with:
+        luarocksVersion: "3.9.2"
 
     - name: setup-linux
-      if: matrix.os == 'ubuntu-22.04'
+      if: matrix.os == 'ubuntu-22.04' || matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get install librtaudio-dev jackd libjack0 libjack-dev
 
+    - name: setup-macos
+      if: matrix.os == 'macos-latest'
+      run: |
+        sw_vers -productVersion
+        brew install rtaudio
+
     - name: setup 
       run: |
+        luarocks --version
         luarocks install inspect
         luarocks --server=https://luarocks.org/dev install nocurses
         luarocks --server=https://luarocks.org/dev install carray
@@ -40,6 +49,7 @@ jobs:
         lua -v
         luarocks make rockspecs/lrtaudio-scm-0.rockspec
         lua -e 'print(require"lrtaudio"); print(require"lrtaudio"._VERSION)'
+        lua -e 'print("RtAudio", require"lrtaudio".getRtAudioVersion());'
 
     - name: test
       run: |
