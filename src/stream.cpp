@@ -1,10 +1,9 @@
-#include <rtaudio/RtAudio.h>
-
 #include "main.hpp"
 #include "controller.hpp"
 #include "stream.hpp"
 #include "channel.hpp"
 #include "procbuf.hpp"
+#include "error.hpp"
 
 #include "receiver_capi.h"
 
@@ -176,6 +175,7 @@ int stream::rtaudio_callback(void* outputBuffer, void* inputBuffer,
 /* ============================================================================================ */
 
 
+#if !LRTAUDIO_NEW_RTAUDIO
 static void errorCallback(RtAudioError::Type type, const std::string& errorText)
 {
     switch (type) {
@@ -186,6 +186,7 @@ static void errorCallback(RtAudioError::Type type, const std::string& errorText)
         default:    lrtaudio::log_error("%s", errorText.c_str()); break;
     }
 }
+#endif // !LRTAUDIO_NEW_RTAUDIO
 
 /* ============================================================================================ */
 
@@ -217,9 +218,15 @@ int stream::open_stream(lua_State* L, ControllerUserData* udata,
                 return luaL_error(L, "error creating writer for status receiver");
             }
         }
-
-        udata->api->openStream(outParams, inpParams, RTAUDIO_FLOAT32, sampleRate, &bufferFrames,
-                               stream::rtaudio_callback, stream, options, errorCallback);
+        LRTAUDIO_CHECK(
+            udata->api,
+            udata->api->openStream(outParams, inpParams, RTAUDIO_FLOAT32, sampleRate, &bufferFrames,
+                                   stream::rtaudio_callback, stream, options
+            #if !LRTAUDIO_NEW_RTAUDIO
+                                   , errorCallback
+            #endif
+            )
+        )
         if (bufferFrames == 0) {
             udata->api->closeStream();
             return luaL_error(L, "error: zero bufferFrames");

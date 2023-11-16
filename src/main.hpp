@@ -1,11 +1,11 @@
 #ifndef LRTAUDIO_MAIN_HPP
 #define LRTAUDIO_MAIN_HPP
 
+#include "util.h"
+
 /* ============================================================================================ */
 extern "C" {
 /* ============================================================================================ */
-
-#include "util.h"
 
 DLL_PUBLIC int luaopen_lrtaudio(lua_State* L);
 

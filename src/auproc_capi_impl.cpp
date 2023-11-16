@@ -1,5 +1,3 @@
-#include <rtaudio/RtAudio.h>
-
 #include "main.hpp"
 #include "auproc_capi_impl.hpp"
 #include "controller.hpp"
@@ -142,6 +140,7 @@ static auproc_obj_type getObjectType(lua_State* L, int index)
             case lrtaudio::TCONTROLLER:  return AUPROC_TENGINE;
             case lrtaudio::TCHANNEL:     return AUPROC_TCONNECTOR;
             case lrtaudio::TPROCBUF:     return AUPROC_TCONNECTOR;
+            case lrtaudio::TNONE: ;
         }
     }
     return AUPROC_TNONE;
@@ -158,6 +157,8 @@ static void getConnectorUdata(lua_State* L, int index, ChannelUserData** channel
         switch (internGetObjectType(udata, len)) {
             case lrtaudio::TCHANNEL:     *channelUdata = (ChannelUserData*) udata; return;
             case lrtaudio::TPROCBUF:     *procBufUdata = (ProcBufUserData*) udata; return;
+            case lrtaudio::TNONE:
+            case lrtaudio::TCONTROLLER: ;
         }
     }
 }
@@ -176,6 +177,7 @@ static auproc_engine* getEngine(lua_State* L, int index, auproc_info* info)
         case lrtaudio::TCONTROLLER:  ctrlUdata = ((ControllerUserData*) udata); break;
         case lrtaudio::TCHANNEL:     ctrlUdata = ((ChannelUserData*)    udata)->ctrlUdata; break;
         case lrtaudio::TPROCBUF:     ctrlUdata = ((ProcBufUserData*)    udata)->ctrlUdata; break;
+        case lrtaudio::TNONE: ;
     }
     if (ctrlUdata) {
         if (!ctrlUdata->isStreamOpen) {

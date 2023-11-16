@@ -1,5 +1,3 @@
-#include <rtaudio/RtAudio.h>
-
 #define AUPROC_CAPI_IMPLEMENT_SET_CAPI 1
 
 #include "main.hpp"

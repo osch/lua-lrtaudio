@@ -1,11 +1,11 @@
 #ifndef LRTAUDIO_STREAM_HPP
 #define LRTAUDIO_STREAM_HPP
 
+#include "util.h"
+
 /* ============================================================================================ */
 extern "C" {
 /* ============================================================================================ */
-
-#include "util.h"
 
 struct receiver_capi;
 struct receiver_object;

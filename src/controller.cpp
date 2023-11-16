@@ -1,8 +1,7 @@
-#include <rtaudio/RtAudio.h>
-
 #define AUPROC_CAPI_IMPLEMENT_SET_CAPI 1
 #define RECEIVER_CAPI_IMPLEMENT_GET_CAPI 1
 
+#include "error.hpp"
 #include "controller.hpp"
 #include "stream.hpp"
 #include "main.hpp"
@@ -63,6 +62,21 @@ static ControllerUserData* checkCtrlUdataOpen(lua_State* L, int arg, bool should
 
 /* ============================================================================================ */
 
+#if LRTAUDIO_NEW_RTAUDIO
+static void errorCallback(RtAudioErrorType type, const std::string& errorText)
+{
+    switch (type) {
+        case RTAUDIO_NO_ERROR:
+        case RTAUDIO_WARNING:
+                    lrtaudio::log_info("%s", errorText.c_str()); break;
+        
+        default:    lrtaudio::log_error("%s", errorText.c_str()); break;
+    }
+}
+#endif // !LRTAUDIO_NEW_RTAUDIO
+
+/* ============================================================================================ */
+
 static int Controller_new(lua_State* L)
 {
     try {
@@ -108,7 +122,11 @@ static int Controller_new(lua_State* L)
             udata->statusReceiver     = receiver;
             receiverCapi->retainReceiver(receiver);
         }
-        udata->api = new RtAudio(apiType);
+        udata->api = new RtAudio(apiType
+#if LRTAUDIO_NEW_RTAUDIO
+                                 , errorCallback
+#endif
+        );
         
         if (!udata->api) {
             return luaL_error(L, "cannot create RtAudio object");
@@ -314,9 +332,11 @@ static int pushDeviceInfo(lua_State* L, int index, const RtAudio::DeviceInfo& de
     lua_pushinteger(L, index);    // -> deviceInfo, key, value
     lua_rawset(L, -3);            // -> deviceInfo
 
+#if !LRTAUDIO_NEW_RTAUDIO
     lua_pushstring(L, "probed");           // -> deviceInfo, key
     lua_pushboolean(L, deviceInfo.probed); // -> deviceInfo, key, value
     lua_rawset(L, -3);                     // -> deviceInfo
+#endif
 
     lua_pushstring(L, "name");                  // -> deviceInfo, key
     lua_pushstring(L, deviceInfo.name.c_str()); // -> deviceInfo, key, value
@@ -728,7 +748,10 @@ static int Controller_startStream(lua_State* L)
     try {
         ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
         if (!udata->stream->isRunning) {
-            udata->api->startStream();
+            LRTAUDIO_CHECK(
+                udata->api,
+                udata->api->startStream()
+            );
             udata->stream->isRunning = true;
         }
         return 0;
@@ -743,7 +766,10 @@ static int Controller_stopStream(lua_State* L)
     try {
         ControllerUserData* udata = checkCtrlUdataOpen(L, 1, true);
         if (udata->stream->isRunning) {
-            udata->api->stopStream();
+            LRTAUDIO_CHECK(
+                udata->api,
+                udata->api->stopStream()
+            )
             udata->stream->isRunning = false;
         }
         return 0;

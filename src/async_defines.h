@@ -81,18 +81,4 @@
 
 /* -------------------------------------------------------------------------------------------- */
 
-#if __STDC_VERSION__ >= 199901L
-    #include <stdbool.h>
-#else
-    #if !defined(__GNUC__) || defined(__STRICT_ANSI__)
-        #define inline
-    #endif 
-    #define bool int
-    #define true 1
-    #define false 0
-#endif
-
-/* -------------------------------------------------------------------------------------------- */
-
-
 #endif /* LRTAUDIO_ASYNC_DEFINES_H */

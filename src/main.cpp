@@ -1,8 +1,6 @@
 #include <vector>
 #include <exception>
 
-#include <rtaudio/RtAudio.h>
-
 #include "main.hpp"
 #include "controller.hpp"
 #include "error.hpp"
@@ -19,11 +17,8 @@ int handleException(lua_State* L)
     try {
         throw;
     }
-    catch (RtAudioError& ex) {
-        return luaL_error(L, "error: %s", ex.getMessage().c_str());
-    }
     catch (std::exception& ex) {
-        return luaL_error(L, "unexpected error: %s", ex.what());
+        return luaL_error(L, "error: %s", ex.what());
     }
     catch (...) {
         return luaL_error(L, "unknown error");

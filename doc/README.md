@@ -6,6 +6,7 @@
 
    * [Overview](#overview)
    * [Module Functions](#module-functions)
+        * [lrtaudio.getRtAudioVersion()](#lrtaudio_getRtAudioVersion)
         * [lrtaudio.getCompiledApi()](#lrtaudio_getCompiledApi)
         * [lrtaudio.new()](#lrtaudio_new)
    * [Controller Methods](#controller-methods)
@@ -41,6 +42,11 @@ has to be implemented in native C code.
 ##   Module Functions
 <!-- ---------------------------------------------------------------------------------------- -->
 
+* <span id="lrtaudio_getRtAudioVersion">**`lrtaudio.getRtAudioVersion()
+  `**</span>
+  
+  Returns the RtAudio version as string.
+  
 * <span id="lrtaudio_getCompiledApi">**`lrtaudio.getCompiledApi()
   `**</span>
   

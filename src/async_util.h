@@ -3,6 +3,10 @@
 #ifndef LRTAUDIO_ASYNC_UTIL_H
 #define LRTAUDIO_ASYNC_UTIL_H
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 /* -------------------------------------------------------------------------------------------- */
 
 #define async_util_abort lrtaudio_async_util_abort
@@ -339,6 +343,10 @@ static inline void async_mutex_notify(Mutex* mutex)
 }
 
 /* -------------------------------------------------------------------------------------------- */
+
+#if defined(__cplusplus)
+} /* extern "C" */
+#endif
 
 #endif /* LRTAUDIO_ASYNC_UTIL_H */
 

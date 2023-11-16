@@ -20,9 +20,21 @@ description = {
 }
 dependencies = {
   "lua >= 5.1, <= 5.4",
+  "luarocks-build-extended"
 }
 build = {
-  type = "builtin",
+  type = "extended",
+  platforms = {
+      macosx = {
+          modules = {
+              lrtaudio = {
+                  variables = {
+                      CXXFLAG_EXTRAS = { "-std=c++11" },
+                  }
+              }
+          }
+      }
+  },
   modules = {
     lrtaudio = {
       libraries = {

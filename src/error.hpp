@@ -1,21 +1,27 @@
 #ifndef LRTAUDIO_ERROR_HPP
 #define LRTAUDIO_ERROR_HPP
 
-/* ============================================================================================ */
-extern "C" {
-/* ============================================================================================ */
-
+#include <stdexcept>
+	
 #include "util.h"
-
-/* ============================================================================================ */
-} // extern "C"
-/* ============================================================================================ */
-
 
 /* ============================================================================================ */
 namespace lrtaudio {
 namespace error {
 /* ============================================================================================ */
+
+#if LRTAUDIO_NEW_RTAUDIO
+    #define LRTAUDIO_CHECK(api, action) { \
+        RtAudioErrorType errTp = action; \
+        if (errTp != RTAUDIO_NO_ERROR) { \
+            throw std::runtime_error(api->getErrorText()); \
+        } \
+    }
+#else
+    #define LRTAUDIO_CHECK(api, action) { \
+        action; \
+    }
+#endif
 
 struct handler_data {
     char*  buffer;

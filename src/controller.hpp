@@ -1,11 +1,11 @@
 #ifndef LRTAUDIO_CONTROLLER_HPP
 #define LRTAUDIO_CONTROLLER_HPP
 
+#include "util.h"
+
 /* ============================================================================================ */
 extern "C" {
 /* ============================================================================================ */
-
-#include "util.h"
 
 int lrtaudio_controller_init_module(lua_State* L, int module);
 

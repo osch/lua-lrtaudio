@@ -24,10 +24,42 @@
     #include <sys/time.h>
 #endif
 
-#include <lua.h>
-#include <lualib.h>
-#include <lauxlib.h>
+#if defined(__cplusplus)
+    #include <rtaudio/RtAudio.h>
+    
+    #if defined(RTAUDIO_VERSION_MAJOR) && RTAUDIO_VERSION_MAJOR >= 6
+        #define LRTAUDIO_NEW_RTAUDIO 1
+    #else
+        #define LRTAUDIO_NEW_RTAUDIO 0
+    #endif
+#endif
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+    #include <lua.h>
+    #include <lualib.h>
+    #include <lauxlib.h>
+#if defined(__cplusplus)
+} /* extern "C" */
+#endif
+
+/* -------------------------------------------------------------------------------------------- */
+
+#if !defined(__cplusplus)
+    #if __STDC_VERSION__ >= 199901L
+        #include <stdbool.h>
+    #else
+        #if !defined(__GNUC__) || defined(__STRICT_ANSI__)
+            #define inline
+        #endif 
+        #define bool int
+        #define true 1
+        #define false 0
+    #endif
+#endif
+
+/* -------------------------------------------------------------------------------------------- */
 
 /**
  * dllexport
