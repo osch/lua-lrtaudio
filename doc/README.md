@@ -41,8 +41,8 @@ has to be implemented in native C code.
 ##   Module Functions
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="lrtaudio_getCompiledApi">**`  lrtaudio.getCompiledApi()
-  `**</a>
+* <span id="lrtaudio_getCompiledApi">**`lrtaudio.getCompiledApi()
+  `**</span>
   
   Returns a string list of possible audio API names that can be used
   for creating a new controller object with [lrtaudio.new()](#lrtaudio_new). 
@@ -52,8 +52,8 @@ has to be implemented in native C code.
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="lrtaudio_new">**`  lrtaudio.new([apiName])
-  `**</a>
+* <span id="lrtaudio_new">**`lrtaudio.new([apiName])
+  `**</span>
   
   Creates a new lrtaudio [controller object](#controller-methods).
   
@@ -72,23 +72,23 @@ control an audio processing stream of input / output channels on specified devic
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_getCurrentApi">**`      controller:getCurrentApi()
-  `** </a>
+* <span id="controller_getCurrentApi">**`controller:getCurrentApi()
+  `** </span>
 
   Returns the audio API name used with this controller object. For possible values 
   see [lrtaudio.getCompiledApi()](#lrtaudio_getCompiledApi).
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_getDeviceCount">**`     controller:getDeviceCount()
-  `** </a>
+* <span id="controller_getDeviceCount">**`controller:getDeviceCount()
+  `** </span>
 
   Returns the number of devices.
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_getDeviceInfo">**`      controller:getDeviceInfo([deviceId])
-  `** </a>
+* <span id="controller_getDeviceInfo">**`controller:getDeviceInfo([deviceId])
+  `** </span>
 
   Returns device information. 
   
@@ -114,8 +114,8 @@ control an audio processing stream of input / output channels on specified devic
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_openStream">**`      controller:openStream(params)
-  `** </a>
+* <span id="controller_openStream">**`controller:openStream(params)
+  `** </span>
 
   Opens the audio stream for this controller object with the specified parameters.
 
@@ -123,73 +123,73 @@ control an audio processing stream of input / output channels on specified devic
   
   The parameter *params* may contain the following stream parameters as key value pairs:
   
-  * <a id="openStream_streamName">*`streamName`*</a> -  optional string. 
+  * <span id="openStream_streamName">*`streamName`*</span> -  optional string. 
     The streamName parameter can be used to set the client name when using the Jack API. 
     By default, the client name is set to "RtApiJack". However, if you wish to create multiple 
     instances of RtAudio with Jack, each instance must have a unique client name.
     
-  * <a id="openStream_inputChannels">*`inputChannels`*</a> -  optional integer. 
+  * <span id="openStream_inputChannels">*`inputChannels`*</span> -  optional integer. 
     Number of channels used for audio input.
     
-  * <a id="openStream_outputChannels">*`outputChannels`*</a> -  optional integer. 
+  * <span id="openStream_outputChannels">*`outputChannels`*</span> -  optional integer. 
     Number of channels used for audio output.
 
-  * <a id="openStream_inputDevice">*`inputDevice`*</a> -  optional integer. 
+  * <span id="openStream_inputDevice">*`inputDevice`*</span> -  optional integer. 
     Device ID of the device used for audio input.
     
-  * <a id="openStream_outputDevice">*`outputDevice`*</a> -  optional integer. 
+  * <span id="openStream_outputDevice">*`outputDevice`*</span> -  optional integer. 
     Device ID of the device used for audio output.
     
-  * <a id="openStream_sampleRate">*`sampleRate`*</a> -  optional integer. 
+  * <span id="openStream_sampleRate">*`sampleRate`*</span> -  optional integer. 
     Sample rate to be used for audio input and output. The effective value chosen can be
     obtained by the method [controller:getStreamSampleRate()](#controller_getStreamSampleRate).
     
-  * <a id="openStream_bufferFrames">*`bufferFrames`*</a> -  optional integer. 
+  * <span id="openStream_bufferFrames">*`bufferFrames`*</span> -  optional integer. 
     Buffer size for an audio processing cylce in number of samples. If not given, a default
     value of 256 is used. If set to 0, [RtAudio] tries to figure out the lowest possible 
     value, but this does not work in all cases. The effective value chosen can be
     obtained by the method [controller:getStreamBufferFrames()](#controller_getStreamBufferFrames).
     
-  * <a id="openStream_minimizeLatency">*`minimizeLatency`*</a> -  optional boolean flag. 
+  * <span id="openStream_minimizeLatency">*`minimizeLatency`*</span> -  optional boolean flag. 
     If set to true, [RtAudio] attempts to set stream parameters for lowest possible latency.
     
-  * <a id="openStream_hogDevice">*`hogDevice`*</a> -  optional boolean flag. 
+  * <span id="openStream_hogDevice">*`hogDevice`*</span> -  optional boolean flag. 
     If set to true, [RtAudio] attempts to grab device for exclusive use.
     
-  * <a id="openStream_scheduleRealtime">*`scheduleRealtime`*</a> -  optional boolean flag. 
+  * <span id="openStream_scheduleRealtime">*`scheduleRealtime`*</span> -  optional boolean flag. 
     If set to true, [RtAudio] attempts to select realtime scheduling for audio processing 
     thread.
     
-  * <a id="openStream_alsaUseDefault">*`alsaUseDefault`*</a> -  optional boolean flag. 
+  * <span id="openStream_alsaUseDefault">*`alsaUseDefault`*</span> -  optional boolean flag. 
     If set to true, [RtAudio] uses the "default" PCM device (ALSA only).
     
   At least one input or output channel has to be specified.
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_closeStream">**`      controller:closeStream()
-  `** </a>
+* <span id="controller_closeStream">**`controller:closeStream()
+  `** </span>
     
   Closes the controller's stream and frees any associated stream memory.  
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_startStream">**`      controller:startStream()
-  `** </a>
+* <span id="controller_startStream">**`controller:startStream()
+  `** </span>
     
   Starts the stream's audio processing.  
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_stopStream">**`      controller:stopStream()
-  `** </a>
+* <span id="controller_stopStream">**`controller:stopStream()
+  `** </span>
     
   Stops the stream's audio processing.  
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_getStreamSampleRate">**`    controller:getStreamSampleRate()
-  `** </a>
+* <span id="controller_getStreamSampleRate">**`controller:getStreamSampleRate()
+  `** </span>
     
   Returns the actual sample rate in samples per second in use by the stream. On some systems, 
   the sample rate used may be slightly different than that specified in the stream parameter
@@ -198,8 +198,8 @@ control an audio processing stream of input / output channels on specified devic
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_getStreamBufferFrames">**`      controller:getStreamBufferFrames()
-  `** </a>
+* <span id="controller_getStreamBufferFrames">**`controller:getStreamBufferFrames()
+  `** </span>
     
   Returns the buffer size for an audio processing cylce in number of samples. This value may 
   differ from the value of [bufferFrames](#openStream_bufferFrames) set in the call to
@@ -207,8 +207,8 @@ control an audio processing stream of input / output channels on specified devic
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_getStreamLatency">**`      controller:getStreamLatency()
-  `** </a>
+* <span id="controller_getStreamLatency">**`controller:getStreamLatency()
+  `** </span>
     
   Returns the internal stream latency in sample frames.
 
@@ -219,8 +219,8 @@ control an audio processing stream of input / output channels on specified devic
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_getStreamInput">**`    controller:getStreamInput([id1[, id2]])
-  `** </a>
+* <span id="controller_getStreamInput">**`controller:getStreamInput([id1[, id2]])
+  `** </span>
   
   Returns one or more input channels of the current audio processing stream.
   
@@ -240,8 +240,8 @@ control an audio processing stream of input / output channels on specified devic
   
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_getStreamOutput">**`    controller:getStreamOutput([id1[, id2]])
-  `** </a>
+* <span id="controller_getStreamOutput">**`controller:getStreamOutput([id1[, id2]])
+  `** </span>
   
   Returns one or more output channels of the current audio processing stream.
   
@@ -261,8 +261,8 @@ control an audio processing stream of input / output channels on specified devic
 
 <!-- ---------------------------------------------------------------------------------------- -->
 
-* <a id="controller_newStreamBuffer">**`    controller:newStreamBuffer([type])
-  `** </a>
+* <span id="controller_newStreamBuffer">**`controller:newStreamBuffer([type])
+  `** </span>
   
   Creates a new stream buffer object which can be used as [connector object](#connector-objects). 
 
